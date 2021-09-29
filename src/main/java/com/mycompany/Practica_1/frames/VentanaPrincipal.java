@@ -3,19 +3,25 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mycompany.frames;
+package com.mycompany.Practica_1.frames;
 
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 import javax.swing.plaf.FileChooserUI;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Highlighter;
 
 /**
  *
@@ -42,6 +48,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         cargaArchivoBoton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         AreaDeCarga = new javax.swing.JTextArea();
+        guardarArchivoBoton = new javax.swing.JButton();
+        textoBuscar = new javax.swing.JTextField();
+        buscarBoton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -56,6 +65,22 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         AreaDeCarga.setRows(5);
         jScrollPane1.setViewportView(AreaDeCarga);
 
+        guardarArchivoBoton.setText("Guardar Archivo");
+        guardarArchivoBoton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                guardarArchivoBotonActionPerformed(evt);
+            }
+        });
+
+        textoBuscar.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
+
+        buscarBoton.setText("Buscar");
+        buscarBoton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buscarBotonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -63,18 +88,33 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(12, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cargaArchivoBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(cargaArchivoBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(51, 51, 51)
+                        .addComponent(guardarArchivoBoton))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 723, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(161, 161, 161))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(61, 61, 61)
+                .addComponent(textoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26)
+                .addComponent(buscarBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(16, 16, 16)
-                .addComponent(cargaArchivoBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cargaArchivoBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(guardarArchivoBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(28, 28, 28)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(42, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(39, 39, 39)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(textoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(buscarBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         pack();
@@ -100,6 +140,56 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         } 
     }//GEN-LAST:event_cargaArchivoBotonActionPerformed
 
+    private void guardarArchivoBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarArchivoBotonActionPerformed
+        try {
+            FileWriter nuevoArchivo=new FileWriter("ArchivoEditado.txt");
+            nuevoArchivo.write(AreaDeCarga.getText());
+            nuevoArchivo.close();
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null,"No se pudo crear el archivo");
+        }
+        
+    }//GEN-LAST:event_guardarArchivoBotonActionPerformed
+
+    private void buscarBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarBotonActionPerformed
+        String palabra=textoBuscar.getText();
+        buscadorDePalabra(AreaDeCarga,palabra);
+    }//GEN-LAST:event_buscarBotonActionPerformed
+
+    
+    public void buscadorDePalabra(JTextArea areaTexto,String palabraParaBuscar){
+        DefaultHighlighter.DefaultHighlightPainter colorRojo=new DefaultHighlighter.DefaultHighlightPainter(Color.red);
+        Highlighter resaltadorRojo=areaTexto.getHighlighter();
+        resaltadorRojo.removeAllHighlights();
+        String texto=areaTexto.getText();
+        int inicioPalabra=0;
+        String palabraComparacion="";
+        for (int i = 0; i < texto.length(); i++) { // for que recorre todo el TextArea
+            if (texto.charAt(i)== ' ' || texto.charAt(i)== '\n') { // Si encuentra un espacio quiere decir que ya termino un palabra
+                if (palabraComparacion.equals(palabraParaBuscar)) {
+                    try {
+                        resaltadorRojo.addHighlight(inicioPalabra, i, colorRojo);
+                    } catch (BadLocationException ex) {
+                        JOptionPane.showMessageDialog(null,"Error al resaltar palabra");
+                    }
+                }
+                palabraComparacion="";
+                inicioPalabra=i+1;
+            } else {
+                palabraComparacion+=texto.charAt(i);
+                if (i==texto.length()-1) {
+                    if (palabraComparacion.equals(palabraParaBuscar)) {
+                        try {
+                            resaltadorRojo.addHighlight(inicioPalabra, (i+1), colorRojo);
+                        } catch (BadLocationException ex) {
+                            JOptionPane.showMessageDialog(null,"Error al resaltar Palabra");
+                        }
+                    }
+                }
+            }
+        }
+    }    
+    
     /**
      * @param args the command line arguments
      */
@@ -137,7 +227,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea AreaDeCarga;
+    private javax.swing.JButton buscarBoton;
     private javax.swing.JButton cargaArchivoBoton;
+    private javax.swing.JButton guardarArchivoBoton;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField textoBuscar;
     // End of variables declaration//GEN-END:variables
 }

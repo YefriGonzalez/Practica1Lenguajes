@@ -1,0 +1,42 @@
+
+package com.mycompany.Practica_1.token;
+
+import com.mycompany.Practica_1.Enum.Tipo;
+
+/**
+ *
+ * @author yefri
+ */
+public class Token {
+    private String texto;
+    private Tipo tipo;
+    private int fila;
+    private int columna;
+
+    public Token(String texto, Tipo tipo, int fila, int columna) {
+        this.texto = texto;
+        this.tipo = tipo;
+        this.fila = fila;
+        this.columna = columna;
+    }
+
+    public String getTexto() {
+        return texto;
+    }
+
+    public Tipo getTipo() {
+        return tipo;
+    }
+
+    public int getFila() {
+        return fila;
+    }
+
+    public int getColumna() {
+        return columna;
+    }
+
+   
+    
+    
+}

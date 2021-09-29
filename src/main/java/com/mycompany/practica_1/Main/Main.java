@@ -1,5 +1,7 @@
+package com.mycompany.practica_1.Main;
 
-import com.mycompany.frames.VentanaPrincipal;
+
+import com.mycompany.Practica_1.frames.VentanaPrincipal;
 
 /*
 
