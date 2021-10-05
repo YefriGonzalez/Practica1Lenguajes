@@ -1,5 +1,11 @@
 package com.mycompany.Practica_1.token;
 
+import com.mycompany.Practica_1.Enum.Agrupacion;
+import com.mycompany.Practica_1.Enum.Operador;
+import com.mycompany.Practica_1.Enum.Puntuacion;
+import com.mycompany.Practica_1.frames.VentanaPrincipal;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
 /**
@@ -7,60 +13,57 @@ import javax.swing.JTextArea;
  * @author yefri
  */
 public class Automata {
+
     private JTextArea textoEntrada;
     private int[][] matrizAutomata;
     private final int[] ESTADOS_ACEPTACION = {2, 3, 5, 6, 7, 8};
-    private final int ESTADO_INICIAL=1;
-    private String[] lineasTexto;
-    private String[] palabrasTexto;
+    String[] lineas;
+    String[] palabras;
     private int fila;
     private int columna;
-    private int estadoActual;
-    private int letras = 0;
-    private int numero = 1;
-    private int signoOperacion = 2;
-    private int signoPuntuacion = 3;
-    private int signoAgrupacion = 4;
-    private int punto = 5;
-    
-    public Automata(JTextArea textoEntrada){
-        this.textoEntrada=textoEntrada;
+    private int estadoActual = 0;
+    private ArrayList<Token> tokens = new ArrayList<>();
+
+    public Automata(JTextArea textoEntrada) {
+        this.textoEntrada = textoEntrada;
         inicializarMatriz();
     }
-    private void inicializarMatriz() {
-        int filas=8;
-        int columnas=6;
-        matrizAutomata = new int[filas][columnas];
-        matrizAutomata[0][0] = 2;
-        matrizAutomata[0][1] = 3;
-        matrizAutomata[0][2] = 7;
-        matrizAutomata[0][3] = 6;
-        matrizAutomata[0][4] = 8;
-        matrizAutomata[0][5] = -1; // numero -1 signfica error
 
-        matrizAutomata[1][0] = 2;
-        matrizAutomata[1][1] = 2;
+    private void inicializarMatriz() {
+        int filas = 8;
+        int columnas = 7;
+        //S1=0   S2=1  S3=2  S4=3  S5=4 S6=5 S7=6  S8=7   Error=-1
+        matrizAutomata = new int[filas][columnas];
+        matrizAutomata[0][0] = 1;
+        matrizAutomata[0][1] = 2;
+        matrizAutomata[0][2] = 6;
+        matrizAutomata[0][3] = 5;
+        matrizAutomata[0][4] = 7;
+        matrizAutomata[0][5] = 5;
+
+        matrizAutomata[1][0] = 1;
+        matrizAutomata[1][1] = 1;
         matrizAutomata[1][2] = -1;
         matrizAutomata[1][3] = -1;
         matrizAutomata[1][4] = -1;
         matrizAutomata[1][5] = -1;
 
         matrizAutomata[2][0] = -1;
-        matrizAutomata[2][1] = 3;
+        matrizAutomata[2][1] = 2;
         matrizAutomata[2][2] = -1;
         matrizAutomata[2][3] = -1;
         matrizAutomata[2][4] = -1;
-        matrizAutomata[2][5] = 4;
+        matrizAutomata[2][5] = 3;
 
         matrizAutomata[3][0] = -1;
-        matrizAutomata[3][1] = 5;
+        matrizAutomata[3][1] = 4;
         matrizAutomata[3][2] = -1;
         matrizAutomata[3][3] = -1;
         matrizAutomata[3][4] = -1;
         matrizAutomata[3][5] = -1;
 
         matrizAutomata[4][0] = -1;
-        matrizAutomata[4][1] = 5;
+        matrizAutomata[4][1] = 4;
         matrizAutomata[4][2] = -1;
         matrizAutomata[4][3] = -1;
         matrizAutomata[4][4] = -1;
@@ -86,7 +89,91 @@ public class Automata {
         matrizAutomata[7][3] = -1;
         matrizAutomata[7][4] = -1;
         matrizAutomata[7][5] = -1;
+    }
 
+    public void leerTextArea() {
+        String palabra = null;
+        String texto = textoEntrada.getText();
+        lineas=texto.split("\n");
+        for (int i = 0; i < lineas.length; i++) {
+            palabras=lineas[i].split(" ");
+            for (int j = 0; j < palabras.length; j++) {
+                analizarPalabra(palabras[j]);
+            }
+        }
+    }
+
+    private void analizarPalabra(String token) {
+        String opcion = "";
+        estadoActual = 0;
+        char[] cadenaPalabra = token.toCharArray();
+        for (int i = 0; i < token.length(); i++) {
+            if (Character.isAlphabetic(cadenaPalabra[i])) {
+                VentanaPrincipal.textAreaTransicicion.append("Me movi del estado " + estadoActual + " al estado " + matrizAutomata[estadoActual][0] + " con:" + cadenaPalabra[i] + "\n");
+                estadoActual = matrizAutomata[estadoActual][0];
+            } else {
+                if (Character.isDigit(cadenaPalabra[i])) {
+                    VentanaPrincipal.textAreaTransicicion.append("Me movi del estado " + estadoActual + " al estado " + matrizAutomata[estadoActual][1] + " con:" + cadenaPalabra[i] + "\n");
+                    estadoActual = matrizAutomata[estadoActual][1];
+                } else {
+                    if (verificarOperador(cadenaPalabra[i])) {
+                        VentanaPrincipal.textAreaTransicicion.append("Me movi del estado " + estadoActual + " al estado " + matrizAutomata[estadoActual][2] + " con:" + cadenaPalabra[i] + "\n");
+                        estadoActual = matrizAutomata[estadoActual][2];
+                    } else {
+                        if (verificarPuntuacion(cadenaPalabra[i]) && estadoActual==0) {
+                            VentanaPrincipal.textAreaTransicicion.append("Me movi del estado " + estadoActual + " al estado " + matrizAutomata[estadoActual][3] + " con:" + cadenaPalabra[i] + "\n");
+                            estadoActual = matrizAutomata[estadoActual][3];
+                        } else {
+                            if (verificarAgrupacion(cadenaPalabra[i])) {
+                                VentanaPrincipal.textAreaTransicicion.append("Me movi del estado " + estadoActual + " al estado " + matrizAutomata[estadoActual][4] + " con:" + cadenaPalabra[i] + "\n");
+                                estadoActual = matrizAutomata[estadoActual][4];
+                            } else {
+                                if (cadenaPalabra[i]=='.' && estadoActual ==2) {
+                                    VentanaPrincipal.textAreaTransicicion.append("Me movi del estado " + estadoActual + " al estado " + matrizAutomata[estadoActual][5] + " con:" + cadenaPalabra[i] + "\n");
+                                    estadoActual = matrizAutomata[estadoActual][5];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    
+    private boolean verificarOperador(char operador) {
+        boolean existente = false;
+        Operador[] instanciasOperador = Operador.values();
+        for (int i = 0; i < instanciasOperador.length; i++) {
+            if (instanciasOperador[i].getSimbolo() == operador) {
+                existente = true;
+            }
+        }
+        return existente;
+    }
+
+    
+    private boolean verificarPuntuacion(char puntuacion) {
+        boolean existente = false;
+        Puntuacion[] instanciasPuntuacion = Puntuacion.values();
+        for (int i = 0; i < instanciasPuntuacion.length; i++) {
+            if (instanciasPuntuacion[i].getSimbolo() == puntuacion) {
+                existente = true;
+            }
+        }
+        return existente;
+    }
+
+    
+    private boolean verificarAgrupacion(char agrupacion) {
+        boolean existente = false;
+        Agrupacion[] instanciasAgrupacion = Agrupacion.values();
+        for (int i = 0; i < instanciasAgrupacion.length; i++) {
+            if (instanciasAgrupacion[i].getSimbolo() == agrupacion) {
+                existente = true;
+            }
+        }
+        return existente;
     }
 
 }

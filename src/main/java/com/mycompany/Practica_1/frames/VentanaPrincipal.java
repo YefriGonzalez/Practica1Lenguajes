@@ -5,6 +5,7 @@
  */
 package com.mycompany.Practica_1.frames;
 
+import com.mycompany.Practica_1.token.Automata;
 import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
@@ -51,12 +52,18 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         textoBuscar = new javax.swing.JTextField();
         buscarBoton = new javax.swing.JButton();
         analizarBoton = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        textAreaTransicicion = new javax.swing.JTextArea();
+        jLabel1 = new javax.swing.JLabel();
+        ReportesBoton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Analizador Léxico");
+        setBackground(new java.awt.Color(255, 153, 0));
         setResizable(false);
 
         cargaArchivoBoton.setText("Cargar Archivo");
+        cargaArchivoBoton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         cargaArchivoBoton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cargaArchivoBotonActionPerformed(evt);
@@ -68,6 +75,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jScrollPane1.setViewportView(AreaDeCarga);
 
         guardarArchivoBoton.setText("Guardar Archivo");
+        guardarArchivoBoton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         guardarArchivoBoton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 guardarArchivoBotonActionPerformed(evt);
@@ -84,50 +92,115 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         });
 
         analizarBoton.setText("Analizar Texto");
+        analizarBoton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        analizarBoton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                analizarBotonActionPerformed(evt);
+            }
+        });
+
+        textAreaTransicicion.setColumns(20);
+        textAreaTransicicion.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        textAreaTransicicion.setForeground(new java.awt.Color(0, 0, 0));
+        textAreaTransicicion.setRows(5);
+        jScrollPane2.setViewportView(textAreaTransicicion);
+
+        jLabel1.setText("Transiciones");
+
+        ReportesBoton.setText("Ver Reportes");
+        ReportesBoton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        ReportesBoton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ReportesBotonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(cargaArchivoBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(44, 44, 44)
+                                .addComponent(guardarArchivoBoton)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(textoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(buscarBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(analizarBoton)
+                                .addGap(60, 60, 60)
+                                .addComponent(ReportesBoton))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(38, 38, 38))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 723, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(176, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(cargaArchivoBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(36, 36, 36)
-                        .addComponent(guardarArchivoBoton)
-                        .addGap(42, 42, 42)
-                        .addComponent(analizarBoton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(textoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(buscarBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(19, 19, 19))))
+                .addComponent(jLabel1)
+                .addGap(192, 192, 192))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(textoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(buscarBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(48, 48, 48)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cargaArchivoBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(guardarArchivoBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(analizarBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(textoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buscarBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(28, 28, 28)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(115, Short.MAX_VALUE))
+                    .addComponent(ReportesBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void ReportesBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReportesBotonActionPerformed
+        ReportesFrame reportes=new ReportesFrame();
+        reportes.setVisible(true);
+    }//GEN-LAST:event_ReportesBotonActionPerformed
+
+    private void analizarBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_analizarBotonActionPerformed
+        Automata automata=new Automata(AreaDeCarga);// enviamos textArea de parametro
+        automata.leerTextArea();
+
+    }//GEN-LAST:event_analizarBotonActionPerformed
+
+    private void guardarArchivoBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarArchivoBotonActionPerformed
+        try {
+            FileWriter nuevoArchivo=new FileWriter("ArchivoEditado.txt");
+            nuevoArchivo.write(AreaDeCarga.getText());
+            nuevoArchivo.close();
+            JOptionPane.showMessageDialog(null,"Archivo Guardado con exito");
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null,"No se pudo crear el archivo");
+        }
+
+    }//GEN-LAST:event_guardarArchivoBotonActionPerformed
+
     private void cargaArchivoBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cargaArchivoBotonActionPerformed
         JFileChooser ventanaCarga=new JFileChooser();// creo mi objeto file chooser
-        int num=ventanaCarga.showOpenDialog(this);// abro mi ventana para buscar el archivo y lo guardo en un entero 
+        int num=ventanaCarga.showOpenDialog(this);// abro mi ventana para buscar el archivo y lo guardo en un entero
         if (num==JFileChooser.APPROVE_OPTION) { // condiciones para que sea la opcion que si se cargo el archivo
             String linea; // creo una variable tipo String
             File archivo=ventanaCarga.getSelectedFile(); // Convierto en archivo el archivo seleccionado en la ventana
@@ -135,26 +208,15 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 FileReader leerArchivo=new FileReader(archivo);// Con el fileReader leo el arhivo
                 BufferedReader textoLeido=new BufferedReader(leerArchivo);// Con el bufferde reader puedo leer linea por linea del archivo
                 while((linea=textoLeido.readLine()) != null){ // este ciclo me sirve para escribir todo el archivo pero linea por linea
-                    AreaDeCarga.append("\n"+linea); // escribimos la linea leida en el TEXT AREA
+                    AreaDeCarga.append(linea+"\n"); // escribimos la linea leida en el TEXT AREA
                 }
             } catch (FileNotFoundException ex) {
                 JOptionPane.showMessageDialog(null,"Error al cargar el archivo");
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(null,"Error al leer el archivo");
             }
-        } 
-    }//GEN-LAST:event_cargaArchivoBotonActionPerformed
-
-    private void guardarArchivoBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarArchivoBotonActionPerformed
-        try {
-            FileWriter nuevoArchivo=new FileWriter("ArchivoEditado.txt");
-            nuevoArchivo.write(AreaDeCarga.getText());
-            nuevoArchivo.close();
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null,"No se pudo crear el archivo");
         }
-        
-    }//GEN-LAST:event_guardarArchivoBotonActionPerformed
+    }//GEN-LAST:event_cargaArchivoBotonActionPerformed
 
     private void buscarBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarBotonActionPerformed
         String palabra=textoBuscar.getText();
@@ -232,11 +294,15 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea AreaDeCarga;
+    private javax.swing.JButton ReportesBoton;
     private javax.swing.JButton analizarBoton;
     private javax.swing.JButton buscarBoton;
     private javax.swing.JButton cargaArchivoBoton;
     private javax.swing.JButton guardarArchivoBoton;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    public static javax.swing.JTextArea textAreaTransicicion;
     private javax.swing.JTextField textoBuscar;
     // End of variables declaration//GEN-END:variables
 }
