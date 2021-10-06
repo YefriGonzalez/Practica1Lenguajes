@@ -10,9 +10,12 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
@@ -29,9 +32,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     /**
      * Creates new form VentanaPrincipal
      */
+    ReportesFrame reportes;
+
     public VentanaPrincipal() {
         initComponents();
-        EnumeradorLineas enumerador=new EnumeradorLineas(AreaDeCarga);
+        EnumeradorLineas enumerador = new EnumeradorLineas(AreaDeCarga);
         jScrollPane1.setRowHeaderView(enumerador);
         this.setLocationRelativeTo(null);
     }
@@ -54,8 +59,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         analizarBoton = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         textAreaTransicicion = new javax.swing.JTextArea();
-        jLabel1 = new javax.swing.JLabel();
         ReportesBoton = new javax.swing.JButton();
+        limpiarTextButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Analizador Léxico");
@@ -83,6 +88,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         });
 
         textoBuscar.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        textoBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textoBuscarActionPerformed(evt);
+            }
+        });
 
         buscarBoton.setText("Buscar");
         buscarBoton.addActionListener(new java.awt.event.ActionListener() {
@@ -105,8 +115,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         textAreaTransicicion.setRows(5);
         jScrollPane2.setViewportView(textAreaTransicicion);
 
-        jLabel1.setText("Transiciones");
-
         ReportesBoton.setText("Ver Reportes");
         ReportesBoton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         ReportesBoton.addActionListener(new java.awt.event.ActionListener() {
@@ -115,148 +123,182 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             }
         });
 
+        limpiarTextButton.setText("Limpiar Texto");
+        limpiarTextButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                limpiarTextButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(cargaArchivoBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(44, 44, 44)
-                                .addComponent(guardarArchivoBoton)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(textoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(buscarBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(analizarBoton)
-                                .addGap(60, 60, 60)
-                                .addComponent(ReportesBoton))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 346, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(38, 38, 38))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(192, 192, 192))
+                        .addContainerGap(95, Short.MAX_VALUE)
+                        .addComponent(textoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(buscarBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(229, 229, 229))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addComponent(cargaArchivoBoton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(guardarArchivoBoton)
+                        .addGap(18, 18, 18)
+                        .addComponent(limpiarTextButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(analizarBoton)
+                        .addGap(18, 18, 18)))
+                .addComponent(ReportesBoton)
+                .addGap(14, 14, 14))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 385, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(15, 15, 15)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(textoBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buscarBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(48, 48, 48)
+                    .addComponent(buscarBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, Short.MAX_VALUE)
+                    .addComponent(textoBuscar))
+                .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cargaArchivoBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(guardarArchivoBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(analizarBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ReportesBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .addComponent(cargaArchivoBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(guardarArchivoBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(limpiarTextButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ReportesBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(analizarBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(36, 36, 36)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void ReportesBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReportesBotonActionPerformed
-        ReportesFrame reportes=new ReportesFrame();
         reportes.setVisible(true);
     }//GEN-LAST:event_ReportesBotonActionPerformed
 
     private void analizarBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_analizarBotonActionPerformed
-        Automata automata=new Automata(AreaDeCarga);// enviamos textArea de parametro
-        automata.leerTextArea();
+        if (!AreaDeCarga.getText().equals("")) {
+            Automata automata = new Automata(AreaDeCarga);// enviamos textArea de parametro
+            reportes = new ReportesFrame();
+            automata.leerTextArea();
+            automata.enviarReportes();
+            textAreaTransicicion.setEditable(false);
+            JOptionPane.showMessageDialog(null, "Texto Analizado con Exito");
+        } else {
+            JOptionPane.showMessageDialog(null,"No hay texto para analizar");
+        }
+
 
     }//GEN-LAST:event_analizarBotonActionPerformed
 
     private void guardarArchivoBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarArchivoBotonActionPerformed
-        try {
-            FileWriter nuevoArchivo=new FileWriter("ArchivoEditado.txt");
-            nuevoArchivo.write(AreaDeCarga.getText());
-            nuevoArchivo.close();
-            JOptionPane.showMessageDialog(null,"Archivo Guardado con exito");
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null,"No se pudo crear el archivo");
+        JFileChooser guardar = new JFileChooser();
+        if (guardar.showDialog(null, "Guardar") == JFileChooser.APPROVE_OPTION) {
+            File archivo = guardar.getSelectedFile();
+            if (archivo.getName().endsWith("txt")) {
+                String documento = AreaDeCarga.getText();
+                guardarDocumento(archivo, documento);
+            } else {
+                JOptionPane.showMessageDialog(null, "Nombre de archivo incorrecto");
+            }
         }
+
 
     }//GEN-LAST:event_guardarArchivoBotonActionPerformed
 
+    public void guardarDocumento(File archivo, String documento) {
+
+        try {
+            FileOutputStream salida = new FileOutputStream(archivo);
+            byte[] bytxt = documento.getBytes();
+            salida.write(bytxt);
+            JOptionPane.showMessageDialog(null, "Archivo Guardado con exito");
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Error al guardar archivo");
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Error al guardar archivo");
+        }
+    }
+
     private void cargaArchivoBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cargaArchivoBotonActionPerformed
-        JFileChooser ventanaCarga=new JFileChooser();// creo mi objeto file chooser
-        int num=ventanaCarga.showOpenDialog(this);// abro mi ventana para buscar el archivo y lo guardo en un entero
-        if (num==JFileChooser.APPROVE_OPTION) { // condiciones para que sea la opcion que si se cargo el archivo
+        JFileChooser ventanaCarga = new JFileChooser();// creo mi objeto file chooser
+        AreaDeCarga.setText("");
+        int num = ventanaCarga.showOpenDialog(this);// abro mi ventana para buscar el archivo y lo guardo en un entero
+        if (num == JFileChooser.APPROVE_OPTION) { // condiciones para que sea la opcion que si se cargo el archivo
             String linea; // creo una variable tipo String
-            File archivo=ventanaCarga.getSelectedFile(); // Convierto en archivo el archivo seleccionado en la ventana
+            File archivo = ventanaCarga.getSelectedFile(); // Convierto en archivo el archivo seleccionado en la ventana
             try {
-                FileReader leerArchivo=new FileReader(archivo);// Con el fileReader leo el arhivo
-                BufferedReader textoLeido=new BufferedReader(leerArchivo);// Con el bufferde reader puedo leer linea por linea del archivo
-                while((linea=textoLeido.readLine()) != null){ // este ciclo me sirve para escribir todo el archivo pero linea por linea
-                    AreaDeCarga.append(linea+"\n"); // escribimos la linea leida en el TEXT AREA
+                FileReader leerArchivo = new FileReader(archivo);// Con el fileReader leo el arhivo
+                BufferedReader textoLeido = new BufferedReader(leerArchivo);// Con el bufferde reader puedo leer linea por linea del archivo
+                while ((linea = textoLeido.readLine()) != null) { // este ciclo me sirve para escribir todo el archivo pero linea por linea
+                    AreaDeCarga.append(linea + "\n"); // escribimos la linea leida en el TEXT AREA
                 }
             } catch (FileNotFoundException ex) {
-                JOptionPane.showMessageDialog(null,"Error al cargar el archivo");
+                JOptionPane.showMessageDialog(null, "Error al cargar el archivo");
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(null,"Error al leer el archivo");
+                JOptionPane.showMessageDialog(null, "Error al leer el archivo");
             }
         }
     }//GEN-LAST:event_cargaArchivoBotonActionPerformed
 
     private void buscarBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarBotonActionPerformed
-        String palabra=textoBuscar.getText();
-        buscadorDePalabra(AreaDeCarga,palabra);
+        String palabra = textoBuscar.getText();
+        buscadorDePalabra(AreaDeCarga, palabra);
     }//GEN-LAST:event_buscarBotonActionPerformed
 
-    
-    public void buscadorDePalabra(JTextArea areaTexto,String palabraParaBuscar){
-        DefaultHighlighter.DefaultHighlightPainter colorRojo=new DefaultHighlighter.DefaultHighlightPainter(Color.red);
-        Highlighter resaltadorRojo=areaTexto.getHighlighter();
+    private void limpiarTextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_limpiarTextButtonActionPerformed
+        AreaDeCarga.setText("");
+        textAreaTransicicion.setText("");
+
+    }//GEN-LAST:event_limpiarTextButtonActionPerformed
+
+    private void textoBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textoBuscarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_textoBuscarActionPerformed
+
+    public void buscadorDePalabra(JTextArea areaTexto, String palabraParaBuscar) {
+        DefaultHighlighter.DefaultHighlightPainter colorRojo = new DefaultHighlighter.DefaultHighlightPainter(Color.red);
+        Highlighter resaltadorRojo = areaTexto.getHighlighter();
         resaltadorRojo.removeAllHighlights();
-        String texto=areaTexto.getText();
-        int inicioPalabra=0;
-        String palabraComparacion="";
+        String texto = areaTexto.getText();
+        int inicioPalabra = 0;
+        String palabraComparacion = "";
         for (int i = 0; i < texto.length(); i++) { // for que recorre todo el TextArea
-            if (texto.charAt(i)== ' ' || texto.charAt(i)== '\n') { // Si encuentra un espacio quiere decir que ya termino un palabra
+            if (texto.charAt(i) == ' ' || texto.charAt(i) == '\n') { // Si encuentra un espacio quiere decir que ya termino un palabra
                 if (palabraComparacion.equals(palabraParaBuscar)) {
                     try {
                         resaltadorRojo.addHighlight(inicioPalabra, i, colorRojo);
                     } catch (BadLocationException ex) {
-                        JOptionPane.showMessageDialog(null,"Error al resaltar palabra");
+                        JOptionPane.showMessageDialog(null, "Error al resaltar palabra");
                     }
                 }
-                palabraComparacion="";
-                inicioPalabra=i+1;
+                palabraComparacion = "";
+                inicioPalabra = i + 1;
             } else {
-                palabraComparacion+=texto.charAt(i);
-                if (i==texto.length()-1) {
+                palabraComparacion += texto.charAt(i);
+                if (i == texto.length() - 1) {
                     if (palabraComparacion.equals(palabraParaBuscar)) {
                         try {
-                            resaltadorRojo.addHighlight(inicioPalabra, (i+1), colorRojo);
+                            resaltadorRojo.addHighlight(inicioPalabra, (i + 1), colorRojo);
                         } catch (BadLocationException ex) {
-                            JOptionPane.showMessageDialog(null,"Error al resaltar Palabra");
+                            JOptionPane.showMessageDialog(null, "Error al resaltar Palabra");
                         }
                     }
                 }
             }
         }
-    }    
-    
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -299,9 +341,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton buscarBoton;
     private javax.swing.JButton cargaArchivoBoton;
     private javax.swing.JButton guardarArchivoBoton;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JButton limpiarTextButton;
     public static javax.swing.JTextArea textAreaTransicicion;
     private javax.swing.JTextField textoBuscar;
     // End of variables declaration//GEN-END:variables

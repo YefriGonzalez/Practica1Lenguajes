@@ -9,11 +9,11 @@ import com.mycompany.Practica_1.Enum.Tipo;
  */
 public class Token {
     private String texto;
-    private Tipo tipo;
+    private String tipo;
     private int fila;
     private int columna;
 
-    public Token(String texto, Tipo tipo, int fila, int columna) {
+    public Token(String texto, String tipo, int fila, int columna) {
         this.texto = texto;
         this.tipo = tipo;
         this.fila = fila;
@@ -24,7 +24,7 @@ public class Token {
         return texto;
     }
 
-    public Tipo getTipo() {
+    public String getTipo() {
         return tipo;
     }
 

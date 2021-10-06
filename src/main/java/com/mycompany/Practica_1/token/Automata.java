@@ -3,10 +3,12 @@ package com.mycompany.Practica_1.token;
 import com.mycompany.Practica_1.Enum.Agrupacion;
 import com.mycompany.Practica_1.Enum.Operador;
 import com.mycompany.Practica_1.Enum.Puntuacion;
+import com.mycompany.Practica_1.Enum.Tipo;
+import com.mycompany.Practica_1.frames.ReportesFrame;
 import com.mycompany.Practica_1.frames.VentanaPrincipal;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -16,13 +18,15 @@ public class Automata {
 
     private JTextArea textoEntrada;
     private int[][] matrizAutomata;
-    private final int[] ESTADOS_ACEPTACION = {2, 3, 5, 6, 7, 8};
+    private final int[] ESTADOS_ACEPTACION = {1, 2, 4, 5, 6, 7};
     String[] lineas;
     String[] palabras;
     private int fila;
     private int columna;
     private int estadoActual = 0;
     private ArrayList<Token> tokens = new ArrayList<>();
+    private ArrayList<Error> errores = new ArrayList<>();
+    private ArrayList<Lexema> lexemas=new ArrayList<>();
 
     public Automata(JTextArea textoEntrada) {
         this.textoEntrada = textoEntrada;
@@ -92,14 +96,16 @@ public class Automata {
     }
 
     public void leerTextArea() {
-        String palabra = null;
         String texto = textoEntrada.getText();
-        lineas=texto.split("\n");
+        lineas = texto.split("\n");
         for (int i = 0; i < lineas.length; i++) {
-            palabras=lineas[i].split(" ");
+            palabras = lineas[i].split(" ");
             for (int j = 0; j < palabras.length; j++) {
                 analizarPalabra(palabras[j]);
+                columna++;
             }
+            columna = 0;
+            fila++;
         }
     }
 
@@ -107,7 +113,9 @@ public class Automata {
         String opcion = "";
         estadoActual = 0;
         char[] cadenaPalabra = token.toCharArray();
+
         for (int i = 0; i < token.length(); i++) {
+            columna++;
             if (Character.isAlphabetic(cadenaPalabra[i])) {
                 VentanaPrincipal.textAreaTransicicion.append("Me movi del estado " + estadoActual + " al estado " + matrizAutomata[estadoActual][0] + " con:" + cadenaPalabra[i] + "\n");
                 estadoActual = matrizAutomata[estadoActual][0];
@@ -120,7 +128,7 @@ public class Automata {
                         VentanaPrincipal.textAreaTransicicion.append("Me movi del estado " + estadoActual + " al estado " + matrizAutomata[estadoActual][2] + " con:" + cadenaPalabra[i] + "\n");
                         estadoActual = matrizAutomata[estadoActual][2];
                     } else {
-                        if (verificarPuntuacion(cadenaPalabra[i]) && estadoActual==0) {
+                        if (verificarPuntuacion(cadenaPalabra[i]) && estadoActual == 0) {
                             VentanaPrincipal.textAreaTransicicion.append("Me movi del estado " + estadoActual + " al estado " + matrizAutomata[estadoActual][3] + " con:" + cadenaPalabra[i] + "\n");
                             estadoActual = matrizAutomata[estadoActual][3];
                         } else {
@@ -128,7 +136,7 @@ public class Automata {
                                 VentanaPrincipal.textAreaTransicicion.append("Me movi del estado " + estadoActual + " al estado " + matrizAutomata[estadoActual][4] + " con:" + cadenaPalabra[i] + "\n");
                                 estadoActual = matrizAutomata[estadoActual][4];
                             } else {
-                                if (cadenaPalabra[i]=='.' && estadoActual ==2) {
+                                if (cadenaPalabra[i] == '.' && estadoActual == 2) {
                                     VentanaPrincipal.textAreaTransicicion.append("Me movi del estado " + estadoActual + " al estado " + matrizAutomata[estadoActual][5] + " con:" + cadenaPalabra[i] + "\n");
                                     estadoActual = matrizAutomata[estadoActual][5];
                                 }
@@ -137,10 +145,30 @@ public class Automata {
                     }
                 }
             }
+            opcion += cadenaPalabra[i];
+            if (estadoActual == -1) {
+                errores.add(new Error(opcion, fila, columna));
+                estadoActual = 0;
+                opcion = "";
+            }
+        }
+        Tipo[] tipos = Tipo.values();
+        for (int i = 0; i < ESTADOS_ACEPTACION.length; i++) {
+            if (ESTADOS_ACEPTACION[i] == estadoActual) {
+                tokens.add(new Token(opcion, tipos[i].getTipo(), fila, columna));
+                estadoActual = 0;
+                opcion = "";
+                break;
+            } else {
+                if (i == ESTADOS_ACEPTACION.length - 1) {
+                    errores.add(new Error(opcion, fila, columna));
+                    estadoActual = 0;
+                    opcion = "";
+                }
+            }
         }
     }
 
-    
     private boolean verificarOperador(char operador) {
         boolean existente = false;
         Operador[] instanciasOperador = Operador.values();
@@ -152,7 +180,6 @@ public class Automata {
         return existente;
     }
 
-    
     private boolean verificarPuntuacion(char puntuacion) {
         boolean existente = false;
         Puntuacion[] instanciasPuntuacion = Puntuacion.values();
@@ -164,7 +191,6 @@ public class Automata {
         return existente;
     }
 
-    
     private boolean verificarAgrupacion(char agrupacion) {
         boolean existente = false;
         Agrupacion[] instanciasAgrupacion = Agrupacion.values();
@@ -176,4 +202,51 @@ public class Automata {
         return existente;
     }
 
+    public void enviarReportes() {
+        if (errores.isEmpty()) {
+            DefaultTableModel model = new DefaultTableModel();
+            ReportesFrame.tokensTable.setModel(model);
+            model.addColumn("Token");
+            model.addColumn("Lexema");
+            model.addColumn("Fila");
+            model.addColumn("Columna");
+            for (Token token : tokens) {
+                model.addRow(new Object[]{token.getTipo(), token.getTexto(), token.getFila(), token.getColumna()});
+            }
+            recuentoLexemas();
+            DefaultTableModel model1 = new DefaultTableModel();
+            ReportesFrame.recuentoTable.setModel(model1);
+            model1.addColumn("Lexema");
+            model1.addColumn("Token");
+            model1.addColumn("Cantidad");
+            for (Lexema lexema: lexemas) {
+                model1.addRow(new Object[]{lexema.getLexema(),lexema.getTipo(),lexema.getCantidad()});
+            }
+        } else {
+            DefaultTableModel modelo = new DefaultTableModel();
+            ReportesFrame.errorTable.setModel(modelo);
+            modelo.addColumn("Cadena");
+            modelo.addColumn("Fila");
+            modelo.addColumn("Columna");
+            for (Error error : errores) {
+                modelo.addRow(new Object[]{error.getTexto(), error.getFila(), error.getColumna()});
+            }
+        }
+    }
+    
+    public void recuentoLexemas(){
+        lexemas.add(new Lexema(tokens.get(0).getTexto(), tokens.get(0).getTipo()));
+        for (int i = 0; i < tokens.size(); i++) {
+            for (int j = 0; j < lexemas.size(); j++) {
+                if (tokens.get(i).getTexto().equals(lexemas.get(j).getLexema())) {
+                    lexemas.get(j).setCantidad(lexemas.get(j).getCantidad()+1);
+                    break;
+                } else {
+                    if (lexemas.size()-1==j) {
+                        lexemas.add(new Lexema(tokens.get(i).getTexto(), tokens.get(i).getTipo()));
+                    }
+                }
+            }
+        }
+    }
 }
