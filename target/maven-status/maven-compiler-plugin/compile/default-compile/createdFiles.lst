@@ -7,10 +7,17 @@ com/mycompany/Practica_1/frames/VentanaPrincipal$4.class
 com/mycompany/Practica_1/frames/VentanaPrincipal$2.class
 com/mycompany/Practica_1/token/Error.class
 com/mycompany/Practica_1/Enum/Puntuacion.class
+com/mycompany/Practica_1/frames/VentanaPrincipal$8.class
 com/mycompany/practica_1/Main/Main.class
 com/mycompany/Practica_1/token/Automata.class
+com/mycompany/Practica_1/frames/VentanaPrincipal$6.class
 com/mycompany/Practica_1/Enum/Agrupacion.class
+com/mycompany/Practica_1/frames/VentanaPrincipal$7.class
 com/mycompany/Practica_1/frames/VentanaPrincipal$5.class
+com/mycompany/Practica_1/frames/ReportesFrame$1.class
+com/mycompany/Practica_1/frames/ReportesFrame$2.class
+com/mycompany/Practica_1/token/Lexema.class
+com/mycompany/Practica_1/frames/ReportesFrame.class
 com/mycompany/Practica_1/token/Token.class
 com/mycompany/Practica_1/frames/EnumeradorLineas$1.class
 com/mycompany/Practica_1/frames/VentanaPrincipal$1.class

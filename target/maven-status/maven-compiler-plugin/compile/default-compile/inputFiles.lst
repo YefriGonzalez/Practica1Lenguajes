@@ -1,10 +1,12 @@
 /home/yefri/NetBeansProjects/Practica_1/src/main/java/com/mycompany/Practica_1/frames/EnumeradorLineas.java
 /home/yefri/NetBeansProjects/Practica_1/src/main/java/com/mycompany/Practica_1/token/Automata.java
 /home/yefri/NetBeansProjects/Practica_1/src/main/java/com/mycompany/Practica_1/Enum/Puntuacion.java
+/home/yefri/NetBeansProjects/Practica_1/src/main/java/com/mycompany/Practica_1/frames/ReportesFrame.java
 /home/yefri/NetBeansProjects/Practica_1/src/main/java/com/mycompany/Practica_1/frames/VentanaPrincipal.java
 /home/yefri/NetBeansProjects/Practica_1/src/main/java/com/mycompany/Practica_1/Enum/Tipo.java
 /home/yefri/NetBeansProjects/Practica_1/src/main/java/com/mycompany/Practica_1/token/Token.java
 /home/yefri/NetBeansProjects/Practica_1/src/main/java/com/mycompany/Practica_1/token/Error.java
+/home/yefri/NetBeansProjects/Practica_1/src/main/java/com/mycompany/Practica_1/token/Lexema.java
 /home/yefri/NetBeansProjects/Practica_1/src/main/java/com/mycompany/Practica_1/Enum/Operador.java
 /home/yefri/NetBeansProjects/Practica_1/src/main/java/com/mycompany/practica_1/Main/Main.java
 /home/yefri/NetBeansProjects/Practica_1/src/main/java/com/mycompany/Practica_1/Enum/Agrupacion.java
